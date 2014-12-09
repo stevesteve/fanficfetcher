@@ -14,6 +14,13 @@
 					<script defer>window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
 					<![endif]-->
 					<script>
+						String.prototype.startsWith = function(prefix) {
+						    return this.indexOf(prefix) === 0;
+						}
+
+						String.prototype.endsWith = function(suffix) {
+						    return this.match(suffix+"$") == suffix;
+						};
 						function setProgress(percent)
 						{
 							$('.progress-bar').css({width:percent+"%"})
@@ -93,6 +100,20 @@
 
 								})
 							})
+							$('.url').on("input",function(){
+								url = $('.url').val();
+								console.log(url)
+								if(url.startsWith("http://")){
+									url = url.replace('http://','')
+									$('.url').val(url)
+									$('.protocol').text("http://")
+								}
+								if(url.startsWith("https://")){
+									url = url.replace('https://','')
+									$('.url').val(url)
+									$('.protocol').text("https://")
+								}
+							})
 						})
 
 					</script>
@@ -156,7 +177,7 @@
 						</div>
 
 						<div class="input-group">
-							<span class="input-group-addon">http://</span>
+							<span class="input-group-addon protocol">http://</span>
 							<input name="url" type="text" class="form-control url" placeholder="URL">
 							<span class="input-group-btn">
 								<button class="btn btn-default fetch" type="button">				
