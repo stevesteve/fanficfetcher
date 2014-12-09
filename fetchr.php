@@ -1,4 +1,8 @@
 <?php
+	ob_end_clean();
+	header("Connection: close");
+	ignore_user_abort(true); // just to be safe
+	ob_start();
 	require_once __DIR__ . "/classes/autoload.php";
 	require_once __DIR__ . "/classes/vendor/HTMLPurifier/HTMLPurifier.auto.php";
 	header("Content-type: application/json");
@@ -14,8 +18,14 @@
 	$af = new AdapterFactory();
 	$resultAdapter = "";
 	$dlid = round(microtime(1),0);
+
+
+	/*$response["status"] = -1;
+	$response["msg"] = __DIR__ . "/jobs.db";
+	die(json_encode($response));
+*/
 	try{		
-		$resultAdapter = $af->createAdapter($request["url"], __DIR__ . "/tmp/" . $dlid);
+		$resultAdapter = $af->createAdapter($request["url"], __DIR__ . "/tmp/", __DIR__ . "/jobs.db");
 	} catch (UnsupportedFanficProviderException $ex)
 	{
 		$response["status"] = -1;
@@ -29,15 +39,21 @@
 		die(json_encode($response));
 	}
 
-	$resultAdapter->fetch();
+	
 
 
 
 	$response["status"] = 1;
 	$response["msg"] = "";
-	$response["dlid"] = $dlid;
+	$response["dlid"] = $resultAdapter->getJobId();
 	$response["fname"] = $resultAdapter->getAuthor() . " - ".$resultAdapter->getFanficTitle().".epub";
-	die(json_encode($response));
+	echo(json_encode($response));
+	$size = ob_get_length();
+	header("Content-Length: $size");
+	ob_end_flush(); // Strange behaviour, will not work
+	flush(); // Unless both are called !
+
+	$resultAdapter->fetch();
 
 
 

@@ -10,11 +10,11 @@
 			);
 
 
-		function createAdapter($url,$outputDir)
+		function createAdapter($url,$outputDir,$dbDir)
 		{
 			foreach ($this->matchmap as $key => $value) {
 				if(preg_match("/".$key."/", $url)){
-					return new $value($url,$outputDir);
+					return new $value($url,$outputDir,$dbDir);
 				}
 			}
 

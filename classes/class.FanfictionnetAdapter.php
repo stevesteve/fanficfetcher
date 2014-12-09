@@ -7,8 +7,8 @@ class FanfictionnetAdapter extends Adapter {
 
 	protected $baseURL = "http://www.fanfiction.net/s/";
 	protected $navigationPattern;
-	function __construct($url, $outputDir) {
-		parent::__construct($url, $outputDir);
+	function __construct($url, $outputDir,$dbDir) {
+		parent::__construct($url, $outputDir,$dbDir);
 
 		$matches = array();
 		preg_match_all("/^(https:\/\/)?(www\.)?fanfiction.net\/s\/(\\d*)\/(\\d*)\//", $url, $matches);
@@ -88,7 +88,7 @@ class FanfictionnetAdapter extends Adapter {
 			$chapterHtml = $this->purifier->purify($chapterHtml);
 			$chapterHtml = $this->CHAPTER_START . $chapterHtml . $this->CHAPTER_END;
 			$this->epub->addChapter("Chapter $i", "Chapter$i.html", $chapterHtml);
-			
+			$this->updateProgress($i);
 
 		}
 

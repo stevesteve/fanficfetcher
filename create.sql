@@ -1,0 +1,6 @@
+CREATE TABLE "job" (
+	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+	`timestamp`	INTEGER NOT NULL,
+	`totalChapters`	INTEGER NOT NULL,
+	`currentChapter`	INTEGER NOT NULL
+)

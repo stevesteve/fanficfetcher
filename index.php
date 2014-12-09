@@ -14,6 +14,43 @@
 					<script defer>window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
 					<![endif]-->
 					<script>
+						function setProgress(percent)
+						{
+							$('.progress-bar').css({width:percent+"%"})
+						}
+						function refreshProgress(id)
+						{
+							alert("starting progress")
+							$.ajax({
+								url:"getstatus.php",
+								type: "POST",
+								data: {id:id},
+								
+								async: true,
+								cache:false,
+								success: function(data){
+									try{
+										data = jQuery.parseJSON(data);
+										setProgress((data.currentChapter / data.totalChapters) * 100)
+									}catch(err){}
+									
+									console.log(data)
+
+									try{
+										if(data.totalChapters != data.currentChapter){
+											refreshProgress(id);
+										} else {
+											enableFetch()
+											$('#hidden').html("<form action='download.php' method='post' name='download'><input name='dlid' value='"+id+"' type='hidden' ></input><input name='fname' value='ayy' type='hidden' ></input></form>");
+											document.forms["download"].submit();
+											setProgress(0)
+										}
+									}catch(err){refreshProgress(id);}
+									
+
+								}
+							})
+						}
 						function enableFetch(){
 							$('.fetch').html('Fetch!')
 							$('.fetch').removeAttr("disabled")
@@ -35,7 +72,7 @@
 								disableFetch()
 								$.post(
 									"fetchr.php",
-					{url: $('.url').val()}
+									{url: $('.url').val()}
 
 								)
 								.done(function(answer){
@@ -48,9 +85,10 @@
 
 									if(answer.status == 1)
 									{
-										$('#hidden').html("<form action='download.php' method='post' name='download'><input name='dlid' value='"+answer.dlid+"' type='hidden' ></input><input name='fname' value='"+answer.fname+"' type='hidden' ></input></form>");
-										document.forms["download"].submit();
-										enableFetch()
+										refreshProgress(answer.dlid);
+										
+										//document.forms["download"].submit();
+										
 									}
 
 								})
@@ -129,7 +167,7 @@
 
 						</div>
 						<div class="progress">
-							<div class="progress-bar progress-bar-success " role="progressbar">
+							<div class="progress-bar progress-bar-success" role="progressbar">
 
 							</div>
 						</div>
