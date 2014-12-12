@@ -1,10 +1,42 @@
 <?php
 
-if(!isset($_POST["dlid"]))
-	header("location: index.php");
+	require_once __DIR__ . "/config.php";
+	require_once __DIR__ . "/classes/autoload.php";
+	require_once __DIR__ . "/classes/vendor/HTMLPurifier/HTMLPurifier.auto.php";
+
+	$request = $_POST;
+	if(!isset($request["id"]))
+		header("location: index.php");
 
 
 
+	$dbhandle = new PDO(DB_CONNECTION_STRING,DB_USER,DB_PASS);
+	$statement = $dbhandle->prepare("SELECT url FROM job WHERE id=:id");
+	$statement->bindValue(":id",$request["id"]);
+	$statement->execute();
+	$result = $statement->fetch(PDO::FETCH_OBJ);
+
+	$af = new AdapterFactory();
+	$resultAdapter = "";
+	try{		
+		$resultAdapter = $af->createAdapter($request["id"], $result->url, TEMP_EPUB_DIR, $dbhandle);
+	} catch (UnsupportedFanficProviderException $ex)
+	{
+		$response["status"] = -1;
+		$response["msg"] = "Unbekannter Fanfic provider: ".$result->url;
+		die(json_encode($response));
+	} catch (Exception $exc)
+	{
+		echo $exc->getMessage();
+	}
+
+	$resultAdapter->fetch();
+
+	
+
+
+
+/*
 $dbaccess = new SQLite3("jobs.db");
 $dbaccess->busyTimeout(-1);
 
@@ -21,6 +53,6 @@ header("content-type: application/octet-stream");
 header('Content-Disposition: attachment; filename='.$result["filename"].".epub");
 readfile($file);
 
-unlink($file);
+unlink($file);*/
 
 ?>

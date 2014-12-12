@@ -27,16 +27,18 @@ abstract class Adapter
 
 	protected $CHAPTER_END = "</body>\n</html>\n";
 
-	function __construct($url, $outputDir, $dbDir)
+	function __construct($jobId, $url, $outputDir, $dbaccess)
 	{
+		$this->jobId = $jobId;
 		$this->url = $url;
 		$this->document = new DOMDocument();
 		@$this->document->loadHTMLFile($url);	
+		$this->dbaccess = $dbaccess;
+		//$this->dbaccess = new SQLite3($dbDir);
+		//$this->dbaccess->busyTimeout(-1);
 		
-		$this->dbaccess = new SQLite3($dbDir);
-		$this->dbaccess->busyTimeout(-1);
-		$this->createJobEntry();
 		$this->epub = new EPub( EPub::BOOK_VERSION_EPUB2, "en", EPub::DIRECTION_LEFT_TO_RIGHT, $outputDir.$this->jobId);
+		$this->initJobEntry();
 	}
 
 	abstract function fetch();
@@ -45,21 +47,26 @@ abstract class Adapter
 	abstract protected function fetchFanficTitle();
 	abstract protected function fetchCoverImage();
 
-	function createJobEntry(){
-		$statement = $this->dbaccess->prepare("INSERT INTO job VALUES(null, :timeStamp, :chapterCount, 0, :fileName)");
+	function initJobEntry(){
+		$statement = $this->dbaccess->prepare("UPDATE job SET totalChapters = :totalChapters, filename=:filename WHERE id = :id");
+		$statement->bindValue(":totalChapters", $this->getChapterCount());
+		$statement->bindValue(":filename", $this->getAuthor()." - ".$this->getFanficTitle());
+		$statement->bindValue(":id", $this->jobId);
+		$statement->execute();
+		//echo("set ".$this->jobId." to ".$this->getChapterCount());
+		/*$statement = $this->dbaccess->prepare("INSERT INTO job VALUES(null, :timeStamp, :chapterCount, 0, :fileName)");
 		$statement->bindValue(':timeStamp',round(microtime(1),0),SQLITE3_INTEGER);
 		$statement->bindValue(':chapterCount',$this->getChapterCount(),SQLITE3_INTEGER);
 		$statement->bindValue(':fileName', $this->getAuthor()." - ".$this->getFanficTitle());
 		$statement->execute();
-		$this->jobId = $this->dbaccess->lastInsertRowId();
+		$this->jobId = $this->dbaccess->lastInsertId();*/
 
 	}
 
 	function updateProgress($currentChapter){
-		$statement = $this->dbaccess->prepare("UPDATE job SET currentChapter=:currentChapter, timestamp=:timestamp WHERE id=:id");
+		$statement = $this->dbaccess->prepare("UPDATE job SET currentChapter=:currentChapter WHERE id=:id");
 		$statement->bindValue(":currentChapter",$currentChapter);
 		$statement->bindValue(":id",$this->jobId);
-		$statement->bindValue(":timestamp",round(microtime(1),0));
 		$statement->execute();
 	}
 
@@ -68,7 +75,7 @@ abstract class Adapter
 	}
 	
 	function getChapterCount(){ 
-		if($this->chapterCount == -1)
+		if($this->chapterCount === -1)
 			$this->fetchChapterCount();
 		return $this->chapterCount; 
 	}

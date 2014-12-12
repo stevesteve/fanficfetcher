@@ -13,11 +13,11 @@
 			"FanfictionnetAdapter" => "https://"
 			);
 
-		function createAdapter($url,$outputDir,$dbDir)
+		function createAdapter($jobId, $url,$outputDir, $dbaccess)
 		{
 			foreach ($this->matchmap as $key => $value) {
 				if(preg_match("/".$key."/", $url)){
-					return new $value($this->protocolMap[$value].$url,$outputDir,$dbDir);
+					return new $value($jobId, $this->protocolMap[$value].$url,$outputDir,$dbaccess);
 				}
 			}
 

@@ -7,24 +7,19 @@ class FanfictionnetAdapter extends Adapter {
 
 	protected $baseURL = "http://www.fanfiction.net/s/";
 	protected $navigationPattern;
-	function __construct($url, $outputDir,$dbDir) {
-		parent::__construct($url, $outputDir,$dbDir);
-
+	function __construct($jobId, $url, $outputDir, $dbaccess) {
+		parent::__construct($jobId, $url, $outputDir, $dbaccess);
+		
 		$matches = array();
 		preg_match_all("/^(https:\/\/)?(www\.)?fanfiction.net\/s\/(\\d*)\/(\\d*)\//", $url, $matches);
-		
-		
 		if(count($matches[3]) == 0)
 		{
 			throw new Exception("Ungültige url: ".$url.". Fanfic ID konnte nicht gelesen werden.");
 		}
-
-		
 		$this->fanficID = $matches[3][0];
-
-		
-
 		$this->navigationPattern = $this->baseURL . $this->fanficID . "/%d";
+		
+		
 
 	}
 

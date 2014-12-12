@@ -2,7 +2,8 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 	<title>fetchr</title>
 	<link rel="stylesheet" href="css/bootstrap.min.css">
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -25,19 +26,31 @@
 						{
 							$('.progress-bar').css({width:percent+"%"})
 						}
+						function startFetch(id)
+						{
+							$.ajax({
+								url:"download.php",
+								type: "POST",
+								data: {id:id},
+								
+								async: true,
+								cache: false
+							})
+							
+						}
 						function refreshProgress(id)
 						{
-							alert("starting progress")
+							
 							$.ajax({
 								url:"getstatus.php",
 								type: "POST",
 								data: {id:id},
 								
 								async: true,
-								cache:false,
+								cache: false,
 								success: function(data){
 									try{
-										data = jQuery.parseJSON(data);
+										
 										setProgress((data.currentChapter / data.totalChapters) * 100)
 									}catch(err){}
 									
@@ -47,12 +60,12 @@
 										if(data.totalChapters != data.currentChapter){
 											refreshProgress(id);
 										} else {
-											enableFetch()
-											$('#hidden').html("<form action='download.php' method='post' name='download'><input name='dlid' value='"+id+"' type='hidden' ></input><input name='fname' value='ayy' type='hidden' ></input></form>");
-											document.forms["download"].submit();
+											enableFetch()	
+											$('#hidden').html("<form action='transmit.php' method='post' name='transmit'><input name='id' value='"+id+"' type='hidden' ></input><input name='fname' value='ayy' type='hidden' ></input></form>");
+											document.forms["transmit"].submit();
 											setProgress(0)
 										}
-									}catch(err){refreshProgress(id);}
+									}catch(err){alert(err);refreshProgress(id);}
 									
 
 								}
@@ -92,6 +105,8 @@
 
 									if(answer.status == 1)
 									{
+										console.log("starting fetch")
+										startFetch(answer.dlid)
 										refreshProgress(answer.dlid);
 										
 										//document.forms["download"].submit();
