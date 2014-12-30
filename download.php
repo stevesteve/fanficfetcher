@@ -1,5 +1,5 @@
 <?php
-
+	header("Content-type: application/json");
 	require_once __DIR__ . "/config.php";
 	require_once __DIR__ . "/classes/autoload.php";
 	require_once __DIR__ . "/classes/vendor/HTMLPurifier/HTMLPurifier.auto.php";

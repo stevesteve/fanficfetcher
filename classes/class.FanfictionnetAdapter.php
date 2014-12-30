@@ -6,7 +6,7 @@
 class FanfictionnetAdapter extends Adapter {
 
 	protected $baseURL = "http://www.fanfiction.net/s/";
-	protected $navigationPattern;
+	
 	function __construct($jobId, $url, $outputDir, $dbaccess) {
 		parent::__construct($jobId, $url, $outputDir, $dbaccess);
 		
@@ -23,8 +23,14 @@ class FanfictionnetAdapter extends Adapter {
 
 	}
 
+	/**
+	 * Creates the epub container and initializes it with some values. Proceeds to fetch all chapters.
+	 * @author XepherX
+	 * @return void
+	 */
 	function fetch() {
 
+		// this is for the fanfictionnet cdn. without referer, they 403 us.
 		$opts = array(
 					'http'=>array(
 						'header'=>array("Referer: $this->url\r\n")
@@ -33,32 +39,25 @@ class FanfictionnetAdapter extends Adapter {
 		$context = stream_context_create($opts);
 		$this->epub->setTitle($this->getFanficTitle());
 		$this->epub->setIdentifier($this->fanficID, EPub::IDENTIFIER_URI);// Could also be the ISBN number, prefered for published books, or a UUID.
-		$this->epub->setLanguage("en");// Not needed, but included for the example, Language is mandatory, but EPub defaults to "en". Use RFC3066 Language codes, such as "en", "da", "fr" etc.
+		$this->epub->setLanguage("en");
 		$this->epub->setDescription("This is a brief description\nA test ePub book as an example of building a book in PHP");
 		$this->epub->setAuthor($this->getAuthor(),$this->getAuthor());
-		$this->epub->setPublisher("fanfiction.net","fanfiction.net");// I hope this is a non existant address :)
+		$this->epub->setPublisher("fanfiction.net","fanfiction.net");
 		$this->epub->setDate(time());// Strictly not needed as the book date defaults to time().
-		//$this->epub->setRights("Copyright and licence information specific for the book.");// As this is generated, this _could_ contain the name or licence information of the user who purchased the book, if needed. If this is used that way, the identifier must also be made unique for the book.
-		$this->epub->setSourceURL($this->url);
-		
-		
-		
-		$this->epub->setCoverImage("Cover.jpg", file_get_contents($this->getCoverImage(),false, $context), "image/jpeg");
 
+		$this->epub->setSourceURL($this->url);	
+		$this->epub->setCoverImage("Cover.jpg", file_get_contents($this->getCoverImage(),false, $context), "image/jpeg");
 		$config = HTMLPurifier_Config::createDefault();
 		$this->purifier = new HTMLPurifier($config);
-
-		$this->fetchChapters();
-		
+		$this->fetchChapters();		
 		$this->epub->finalize();
-
-		
-		
-		
-		
-		
 	}
 
+	/**
+	 * Fetches all chapters of the fanfic, sanitizes them, updates progess and adds them to the epub.
+	 * @author XepherX
+	 * @return void
+	 */
 	function fetchChapters() {
 
 		$chaptertextQuery = "//*[@id='storytext']";
@@ -79,7 +78,6 @@ class FanfictionnetAdapter extends Adapter {
 			}
 			
 			$chapterHtml = utf8_decode($chapterHtml);
-			//$chapterHtml = preg_replace("/hr.*\snoshade/", "hr /",$chapterHtml);
 			$chapterHtml = $this->purifier->purify($chapterHtml);
 			$chapterHtml = $this->CHAPTER_START . $chapterHtml . $this->CHAPTER_END;
 			$this->epub->addChapter("Chapter $i", "Chapter$i.html", $chapterHtml);

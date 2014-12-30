@@ -4,9 +4,9 @@
 	/*
 		DATABASE SETTINGS
 	 */
-	define("DB_CONNECTION_STRING","mysql:host=localhost;dbname=database"); // connection string used for PBO.
+	define("DB_CONNECTION_STRING","mysql:host=localhost;dbname=fanficfetcher"); // connection string used for PBO.
 	define("DB_USER","root"); // database username
-	define("DB_PASS","root"); // database password
+	define("DB_PASS",""); // database password
 
 	/*
 		OTHER SETTINGS

@@ -9,26 +9,15 @@
 	$lastTimestamp = time();
 	while(true)
 	{
-
-		
 		$statement = $dbaccess->prepare("SELECT currentChapter, totalChapters, timestamp FROM job WHERE id=:id");	
-
-		
 		$statement->bindValue(":id",$request["id"]);
 		$statement->execute();
 		$result = $statement->fetch(PDO::FETCH_ASSOC);
-		
-		
-
 		if(strtotime($result["timestamp"]) > $lastTimestamp || $result["currentChapter"] == $result["totalChapters"])
 		{
 			die(json_encode($result));
 		}
-
 		sleep(1);
 	}
-	
-	
-	//
 
 ?>

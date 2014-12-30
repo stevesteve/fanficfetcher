@@ -34,7 +34,17 @@
 								data: {id:id},
 								
 								async: true,
-								cache: false
+								cache: false,
+
+								success:function(answer){
+									console.log(answer)
+									if(answer.status == -1)
+									{
+										console.log("answer was fail")
+										enableFetch()
+										showError("",answer.msg)
+									}
+								}
 							})
 							
 						}
@@ -76,7 +86,7 @@
 							$('.fetch').removeAttr("disabled")
 						}
 						function disableFetch(){
-							$('.fetch').html('Fetching...<span class="glyphicon glyphicon-refresh loading"></span>')
+							$('.fetch').html('Fetching...<span class="glyphicon loading" style="top:3px; display: inline-block; width:16px; height:16px; background-image: url(img/spinner.gif); background-repeat:no-repeat; background-size:cover;"></span>')
 							$('.fetch').attr("disabled","disabled")
 						}
 						function showError(errorTitle, errorMessage){
@@ -99,6 +109,7 @@
 									console.log(answer);
 									if(answer.status == -1)
 									{
+										console.log("answer was fail")
 										enableFetch()
 										showError("",answer.msg)
 									}
@@ -139,6 +150,7 @@
 							-webkit-animation-duration: 1000ms;
 							-webkit-animation-iteration-count: infinite;
 							-webkit-animation-timing-function: linear;
+
 
 							-moz-animation-name: spin;
 							-moz-animation-duration: 1000ms;
