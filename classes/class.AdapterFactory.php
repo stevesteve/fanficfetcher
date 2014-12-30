@@ -21,7 +21,7 @@
 				}
 			}
 
-			throw new UnsupportedFanficProviderException();
+			throw new UnsupportedFanficProviderException("Ungültiger Fanficprovider: ".$url);
 		}
 
 

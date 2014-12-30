@@ -118,7 +118,7 @@
 									{
 										console.log("starting fetch")
 										startFetch(answer.dlid)
-										refreshProgress(answer.dlid);
+										//refreshProgress(answer.dlid);
 										
 										//document.forms["download"].submit();
 										

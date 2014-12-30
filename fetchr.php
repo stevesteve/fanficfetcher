@@ -24,7 +24,5 @@
 	$response["dlid"] = $dbhandle->lastInsertId();
 	die(json_encode($response));
 
-	
-	$resultAdapter->fetch();
 
 ?>

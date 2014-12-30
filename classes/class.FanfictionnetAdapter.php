@@ -14,11 +14,13 @@ class FanfictionnetAdapter extends Adapter {
 		preg_match_all("/^(https:\/\/)?(www\.)?fanfiction.net\/s\/(\\d*)\/(\\d*)(\/)?/", $url, $matches);
 		if(count($matches[3]) == 0)
 		{
-			throw new Exception("Ungültige url: ".$url.". Fanfic ID konnte nicht gelesen werden.");
+			throw new AdapterException("Ungültige url: ".$url.". Fanfic ID konnte nicht gelesen werden.");
 		}
 		$this->fanficID = $matches[3][0];
+		
 		$this->navigationPattern = $this->baseURL . $this->fanficID . "/%d";
 		
+
 		
 
 	}

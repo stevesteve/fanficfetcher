@@ -88,6 +88,19 @@ abstract class Adapter
 
 	function __construct($jobId, $url, $outputDir, $dbaccess)
 	{
+		try{
+			$headers = get_headers($url);	
+		} catch(Exception $ex){
+			throw new AdapterException("Unbekannter Fehler beim überprüfen der Website: ".$ex->getMessage());
+		}
+		
+		if (strpos($headers[0],'404') !== false) {
+			throw new AdapterException("Fehler 404: Folgende URL wurde nicht gefunden: ".$url);
+		}
+
+		
+		
+
 		$this->jobId = $jobId;
 		$this->url = $url;
 		$this->document = new DOMDocument();
