@@ -20,17 +20,21 @@
 	$resultAdapter = "";
 	try{		
 		$resultAdapter = $af->createAdapter($request["id"], $result->url, TEMP_EPUB_DIR, $dbhandle);
-	} catch (UnsupportedFanficProviderException $ex)
+	} catch (Exception $ex)
 	{
 		$response["status"] = -1;
 		$response["msg"] = "Unbekannter Fanfic provider: ".$result->url;
 		die(json_encode($response));
-	} catch (Exception $exc)
-	{
-		echo $exc->getMessage();
 	}
 
+try{	
+
 	$resultAdapter->fetch();
+} catch(Exception $ex){
+	$response["status"] = -1;
+	$response["msg"] = $ex->getMessage();
+	die(json_encode($response));
+}
 
 	
 

@@ -11,7 +11,7 @@ class FanfictionnetAdapter extends Adapter {
 		parent::__construct($jobId, $url, $outputDir, $dbaccess);
 		
 		$matches = array();
-		preg_match_all("/^(https:\/\/)?(www\.)?fanfiction.net\/s\/(\\d*)\/(\\d*)\//", $url, $matches);
+		preg_match_all("/^(https:\/\/)?(www\.)?fanfiction.net\/s\/(\\d*)\/(\\d*)(\/)?/", $url, $matches);
 		if(count($matches[3]) == 0)
 		{
 			throw new Exception("Ungültige url: ".$url.". Fanfic ID konnte nicht gelesen werden.");

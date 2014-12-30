@@ -1,2 +1,4 @@
-tmp
+.gitignore
+tmp/*
+*.db
 config.php
