@@ -1,4 +1,4 @@
-<?php
+<?php 
 	header("Content-type: application/json");
 	require_once __DIR__ . "/config.php";
 	$request = array_merge($_POST, $_GET);
