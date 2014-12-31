@@ -1,7 +1,7 @@
 <?php
 	header("Content-type: application/json");
 	require_once __DIR__ . "/config.php";
-	$request = $_POST;
+	$request = array_merge($_POST, $_GET);
 	if(!isset($request["id"]))
 		die();
 	$dbaccess = new PDO(DB_CONNECTION_STRING,DB_USER,DB_PASS);
