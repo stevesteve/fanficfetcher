@@ -1,6 +1,12 @@
 <?php
 	require_once __DIR__ . "/config.php";
-	$request = $_POST;
+	require_once __DIR__. "/vendor/autoload.php";
+
+	$whoops = new \Whoops\Run;
+	$whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
+	$whoops->register();
+
+	$request = $_GET;
 	if(!isset($request["id"]))
 		die();
 
@@ -11,10 +17,9 @@
 	$result = $statement->fetch(PDO::FETCH_OBJ);
 
 	$file = __DIR__ . "/tmp/" . $request["id"];
-
 	if(!file_exists($file))
 		header("location: index.php");
-
+	
 	header("content-type: application/octet-stream");
 	header('Content-Disposition: attachment; filename="'.$result->filename.'".epub');
 	readfile($file);

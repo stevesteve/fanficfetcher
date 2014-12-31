@@ -13,7 +13,7 @@ function startFetch(id)
 {
 	$.ajax({
 		url:"fetchStory",
-		type: "POST",
+		type: "get",
 		data: {id:id},
 
 		async: true,
@@ -28,7 +28,7 @@ function startFetch(id)
 				showError("",answer.msg)
 			}
 			else if(answer.status == 1){
-				$('#hidden').html("<form action='download' method='post' name='download'><input name='id' value='"+id+"' type='hidden' ></input><input name='fname' value='ayy' type='hidden' ></input></form>");
+				$('#hidden').html("<form action='download' method='get' name='download'><input name='id' value='"+id+"' type='hidden' ></input></form>");
 				document.forms["download"].submit();				
 				enableFetch()				
 			}
@@ -41,7 +41,7 @@ function refreshProgress(id)
 
 	$.ajax({
 		url:"getStatus",
-		type: "POST",
+		type: "get",
 		data: {id:id},
 
 		async: true,
@@ -84,7 +84,7 @@ function showError(errorTitle, errorMessage){
 $('document').ready(function(){
 	$('.fetch').on("click", function(){
 		disableFetch()
-		$.post(
+		$.get(
 			"createJob",
 			{url: $('.url').val()}
 

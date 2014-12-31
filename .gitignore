@@ -2,3 +2,8 @@
 tmp/*
 *.db
 config.php
+
+# composer
+composer.phar
+composer.lock
+vendor/
