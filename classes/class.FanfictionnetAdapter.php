@@ -79,7 +79,7 @@ class FanfictionnetAdapter extends Adapter {
 				$chapterHtml .= $chapterDocument->saveHTML($node);
 			}
 			
-			$chapterHtml = utf8_decode($chapterHtml);
+//			$chapterHtml = utf8_decode($chapterHtml);
 			$chapterHtml = $this->purifier->purify($chapterHtml);
 			$chapterHtml = $this->CHAPTER_START . $chapterHtml . $this->CHAPTER_END;
 			$this->epub->addChapter("Chapter $i", "Chapter$i.html", $chapterHtml);
