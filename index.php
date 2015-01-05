@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">	
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-	<title>fetchr</title>
+	<title>fetchr | download fanfiction as epub</title>
 	<link rel="stylesheet" href="css/bootstrap.min.css">
 	<link rel="stylesheet" href="css/fetchr.css">
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
